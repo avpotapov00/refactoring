@@ -72,7 +72,7 @@ class AddProductServletTest {
     @Test
     @SneakyThrows
     void shouldThrowOnNameParameterIsAbsent() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             var request = Mockito.mock(HttpServletRequest.class);
             var response = Mockito.mock(HttpServletResponse.class);
 
@@ -85,7 +85,7 @@ class AddProductServletTest {
     @Test
     @SneakyThrows
     void shouldThrowOnPriceParameterIsAbsent() {
-        assertThrows(NumberFormatException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             var request = Mockito.mock(HttpServletRequest.class);
             var response = Mockito.mock(HttpServletResponse.class);
 

@@ -2,14 +2,11 @@ package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.model.Product;
 import ru.akirakozov.sd.refactoring.repository.ProductRepository;
+import ru.akirakozov.sd.refactoring.view.HtmlContentComposer;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 
 /**
  * @author akirakozov
@@ -23,14 +20,24 @@ public class AddProductServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String name = request.getParameter("name");
-        long price = Long.parseLong(request.getParameter("price"));
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        var product = extractProduct(request);
+        productRepository.save(product);
+        HtmlContentComposer.composeResponse(response, "OK");
+    }
 
-        productRepository.save(new Product(name, price));
+    private Product extractProduct(HttpServletRequest request) {
+        String name = getPresentParameter(request, "name");
+        long price = Long.parseLong(getPresentParameter(request, "price"));
 
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("OK");
+        return new Product(name, price);
+    }
+
+    private String getPresentParameter(HttpServletRequest request, String name) {
+        var parameterValue = request.getParameter(name);
+        if (parameterValue == null) {
+            throw new IllegalArgumentException("Parameter \"" + name + "\" is absent");
+        }
+        return parameterValue;
     }
 }

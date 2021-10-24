@@ -2,16 +2,16 @@ package ru.akirakozov.sd.refactoring.servlet;
 
 import lombok.SneakyThrows;
 import ru.akirakozov.sd.refactoring.repository.ProductRepository;
+import ru.akirakozov.sd.refactoring.view.HtmlContentComposer;
+import ru.akirakozov.sd.refactoring.view.ProductsHtmlMapper;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+
+import static ru.akirakozov.sd.refactoring.view.HtmlContentComposer.composeResponse;
 
 /**
  * @author akirakozov
@@ -20,64 +20,57 @@ public class QueryServlet extends HttpServlet {
 
     private final ProductRepository productRepository;
 
-    public QueryServlet(ProductRepository productRepository) {
+    private final ProductsHtmlMapper productsHtmlMapper;
+
+    public QueryServlet(ProductRepository productRepository, ProductsHtmlMapper productsHtmlMapper) {
         this.productRepository = productRepository;
+        this.productsHtmlMapper = productsHtmlMapper;
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String command = request.getParameter("command");
+        var command = request.getParameter("command");
 
-        var responseWriter = response.getWriter();
         switch (command) {
-            case "max" -> queryMax(responseWriter);
-            case "min" -> queryMin(responseWriter);
-            case "count" -> queryCount(responseWriter);
-            case "sum" -> querySum(responseWriter);
-            default -> responseWriter.println("Unknown command: " + command);
+            case "max" -> queryMax(response);
+            case "min" -> queryMin(response);
+            case "count" -> queryCount(response);
+            case "sum" -> querySum(response);
+            default ->  response.getWriter().println("Unknown command: " + command);
         }
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
 
     @SneakyThrows
-    private void queryMax(PrintWriter responseWriter) {
-        responseWriter.println("<html><body>");
-        responseWriter.println("<h1>Product with max price: </h1>");
-        productRepository.findMaxByPrice().ifPresent(product -> {
-            responseWriter.println(product.name() + "\t" + product.price() + "</br>");
-        });
-        responseWriter.println("</body></html>");
+    private void queryMax(HttpServletResponse response) {
+        var message = "Product with max price: ";
+        var content = productRepository.findMaxByPrice()
+                .map(product -> productsHtmlMapper.toSingleProduct(message, product))
+                .orElse(productsHtmlMapper.toHeaderMessage(message));
+        composeResponse(response, content);
     }
 
     @SneakyThrows
-    private void queryMin(PrintWriter responseWriter) {
-        responseWriter.println("<html><body>");
-        responseWriter.println("<h1>Product with min price: </h1>");
-        productRepository.findMinByPrice().ifPresent(product -> {
-            responseWriter.println(product.name() + "\t" + product.price() + "</br>");
-        });
-        responseWriter.println("</body></html>");
+    private void queryMin(HttpServletResponse response) {
+        var message = "Product with min price: ";
+        var content = productRepository.findMinByPrice()
+                .map(product -> productsHtmlMapper.toSingleProduct(message, product))
+                .orElse(productsHtmlMapper.toHeaderMessage(message));
+        composeResponse(response, content);
     }
 
     @SneakyThrows
-    private void querySum(PrintWriter responseWriter) {
-        responseWriter.println("<html><body>");
-        responseWriter.println("Summary price: ");
-        var sum = productRepository.sumByPrice();
-        responseWriter.println(sum);
-        responseWriter.println("</body></html>");
+    private void querySum(HttpServletResponse response) {
+        var message = "Summary price: " + productRepository.sumByPrice();
+        var content = productsHtmlMapper.toMessage(message);
+        composeResponse(response, content);
     }
 
     @SneakyThrows
-    private void queryCount(PrintWriter responseWriter) {
-        responseWriter.println("<html><body>");
-        responseWriter.println("Number of products: ");
-        var sum = productRepository.countAll();
-        responseWriter.println(sum);
-        responseWriter.println("</body></html>");
+    private void queryCount(HttpServletResponse response) {
+        var message = "Number of products: " + productRepository.countAll();
+        var content = productsHtmlMapper.toMessage(message);
+        composeResponse(response, content);
     }
 
 }

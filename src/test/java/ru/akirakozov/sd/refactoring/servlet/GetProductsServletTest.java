@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import ru.akirakozov.sd.refactoring.model.Product;
 import ru.akirakozov.sd.refactoring.repository.impl.ProductRepositoryImpl;
 import ru.akirakozov.sd.refactoring.util.TestUtils;
+import ru.akirakozov.sd.refactoring.view.impl.ProductsHtmlMapperImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,10 @@ import static ru.akirakozov.sd.refactoring.util.TestUtils.*;
 
 class GetProductsServletTest {
 
-    private final GetProductsServlet getProductsServlet = new GetProductsServlet(new ProductRepositoryImpl());
+    private final GetProductsServlet getProductsServlet = new GetProductsServlet(
+            new ProductRepositoryImpl(),
+            new ProductsHtmlMapperImpl()
+    );
 
     @BeforeEach
     void createTableIfNotExists() {

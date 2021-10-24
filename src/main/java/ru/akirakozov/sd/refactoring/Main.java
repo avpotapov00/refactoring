@@ -7,6 +7,7 @@ import ru.akirakozov.sd.refactoring.repository.impl.ProductRepositoryImpl;
 import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
 import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
 import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
+import ru.akirakozov.sd.refactoring.view.impl.ProductsHtmlMapperImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -35,10 +36,11 @@ public class Main {
         server.setHandler(context);
 
         var productRepository = new ProductRepositoryImpl();
+        var productsHtmlMapper = new ProductsHtmlMapperImpl();
 
         context.addServlet(new ServletHolder(new AddProductServlet(productRepository)), "/add-product");
-        context.addServlet(new ServletHolder(new GetProductsServlet(productRepository)),"/get-products");
-        context.addServlet(new ServletHolder(new QueryServlet(productRepository)),"/query");
+        context.addServlet(new ServletHolder(new GetProductsServlet(productRepository, productsHtmlMapper)),"/get-products");
+        context.addServlet(new ServletHolder(new QueryServlet(productRepository, productsHtmlMapper)),"/query");
 
         server.start();
         server.join();
