@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface ProductRepository {
 
+    void createTable();
+
     void save(Product product);
 
     Optional<Product> findMaxByPrice();

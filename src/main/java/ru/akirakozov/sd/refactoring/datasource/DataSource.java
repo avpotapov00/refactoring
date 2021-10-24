@@ -1,4 +1,4 @@
-package ru.akirakozov.sd.refactoring.config;
+package ru.akirakozov.sd.refactoring.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

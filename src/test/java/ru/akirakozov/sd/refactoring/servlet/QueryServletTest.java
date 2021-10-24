@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import ru.akirakozov.sd.refactoring.config.DataSource;
+import ru.akirakozov.sd.refactoring.datasource.DataSource;
 import ru.akirakozov.sd.refactoring.model.Product;
 import ru.akirakozov.sd.refactoring.repository.impl.ProductRepositoryImpl;
 import ru.akirakozov.sd.refactoring.util.BaseTest;

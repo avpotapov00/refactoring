@@ -1,7 +1,7 @@
 package ru.akirakozov.sd.refactoring.repository.impl;
 
 import lombok.SneakyThrows;
-import ru.akirakozov.sd.refactoring.config.DataSource;
+import ru.akirakozov.sd.refactoring.datasource.DataSource;
 import ru.akirakozov.sd.refactoring.model.Product;
 import ru.akirakozov.sd.refactoring.repository.ProductRepository;
 
@@ -54,5 +54,15 @@ public class ProductRepositoryImpl extends BaseRepository implements ProductRepo
     @Override
     public List<Product> findAll() {
         return query("SELECT * FROM PRODUCT", productMapper::mapAll);
+    }
+
+    @Override
+    public void createTable() {
+        createTable("""
+                "CREATE TABLE IF NOT EXISTS PRODUCT" +
+                                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                                    " NAME           TEXT    NOT NULL, " +
+                                    " PRICE          INT     NOT NULL)"
+                """);
     }
 }
