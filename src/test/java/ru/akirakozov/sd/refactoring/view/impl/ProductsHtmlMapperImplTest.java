@@ -72,6 +72,6 @@ class ProductsHtmlMapperImplTest {
 
     @Test
     void shouldMapRawText() {
-        assertEquals("OK", productsHtmlMapper.toRawText("Message"));
+        assertEquals("OK", productsHtmlMapper.toRawText("OK"));
     }
 }
