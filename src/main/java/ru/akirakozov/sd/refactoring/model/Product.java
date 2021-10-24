@@ -1,4 +1,7 @@
 package ru.akirakozov.sd.refactoring.model;
 
-public record Product(String name, int price) {
+import lombok.NonNull;
+
+public record Product(@NonNull String name,
+                      @NonNull long price) {
 }

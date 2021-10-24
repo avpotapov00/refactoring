@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.akirakozov.sd.refactoring.model.Product;
+import ru.akirakozov.sd.refactoring.repository.impl.ProductRepositoryImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +19,7 @@ import static ru.akirakozov.sd.refactoring.util.TestUtils.*;
 
 class QueryServletTest {
 
-    private final QueryServlet queryServlet = new QueryServlet();
+    private final QueryServlet queryServlet = new QueryServlet(new ProductRepositoryImpl());
 
     @BeforeEach
     void createTableIfNotExists() {
