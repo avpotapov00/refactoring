@@ -1,13 +1,16 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import ru.akirakozov.sd.refactoring.config.DataSource;
 import ru.akirakozov.sd.refactoring.model.Product;
 import ru.akirakozov.sd.refactoring.repository.impl.ProductRepositoryImpl;
-import ru.akirakozov.sd.refactoring.util.TestUtils;
+import ru.akirakozov.sd.refactoring.util.BaseTest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,15 +21,20 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static ru.akirakozov.sd.refactoring.util.TestUtils.cleanTable;
 
-class AddProductServletTest {
+class AddProductServletTest extends BaseTest{
 
-    private final AddProductServlet addProductServlet = new AddProductServlet(new ProductRepositoryImpl());
+    private static AddProductServlet addProductServlet;
+
+    public AddProductServletTest() {
+        super(new DataSource("jdbc:sqlite:test.db"));
+        addProductServlet = new AddProductServlet(new ProductRepositoryImpl(dataSource));
+    }
+
 
     @BeforeEach
     void createTableIfNotExists() {
-        TestUtils.createTable();
+        createTable();
     }
 
     @Test
@@ -36,7 +44,7 @@ class AddProductServletTest {
 
         createProduct(product);
 
-        assertEquals(List.of(product), TestUtils.getAllProducts());
+        assertEquals(List.of(product), getAllProducts());
     }
 
     @Test
@@ -49,7 +57,7 @@ class AddProductServletTest {
 
         products.forEach(this::createProduct);
 
-        assertEquals(products, TestUtils.getAllProducts());
+        assertEquals(products, getAllProducts());
     }
 
     @Test
@@ -61,12 +69,12 @@ class AddProductServletTest {
         );
 
         var existedProducts = List.of(new Product("door", 50));
-        TestUtils.fillTable(existedProducts);
+        fillTable(existedProducts);
 
         products.forEach(this::createProduct);
 
         var expectedProducts = Stream.of(existedProducts, products).flatMap(List::stream).toList();
-        assertEquals(expectedProducts, TestUtils.getAllProducts());
+        assertEquals(expectedProducts, getAllProducts());
     }
 
     @Test

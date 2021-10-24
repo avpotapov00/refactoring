@@ -7,8 +7,15 @@ import ru.akirakozov.sd.refactoring.repository.ResultSetMapper;
 
 public abstract class BaseRepository {
 
+    private final DataSource dataSource;
+
+    protected BaseRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+
     protected void save(String sql, PreparedStatementConfigurer configurer) {
-        try (var connection = DataSource.getConnection()) {
+        try (var connection = dataSource.getConnection()) {
             var statement = connection.prepareStatement(sql);
             configurer.configure(statement);
 
@@ -19,7 +26,7 @@ public abstract class BaseRepository {
     }
 
     protected <T> T query(String sql, ResultSetMapper<T> mapper) {
-        try (var connection = DataSource.getConnection()) {
+        try (var connection = dataSource.getConnection()) {
             var statement = connection.prepareStatement(sql);
             var resultSet = statement.executeQuery();
 

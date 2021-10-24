@@ -3,22 +3,26 @@ package ru.akirakozov.sd.refactoring.repository.impl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.akirakozov.sd.refactoring.config.DataSource;
 import ru.akirakozov.sd.refactoring.model.Product;
-import ru.akirakozov.sd.refactoring.util.TestUtils;
+import ru.akirakozov.sd.refactoring.util.BaseTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static ru.akirakozov.sd.refactoring.util.TestUtils.cleanTable;
-import static ru.akirakozov.sd.refactoring.util.TestUtils.fillTable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ProductRepositoryImplTest {
+class ProductRepositoryImplTest extends BaseTest {
 
-    private final ProductRepositoryImpl repository = new ProductRepositoryImpl();
+    private final ProductRepositoryImpl repository;
+
+    public ProductRepositoryImplTest() {
+        super(new DataSource("jdbc:sqlite:test.db"));
+        repository = new ProductRepositoryImpl(dataSource);
+    }
 
     @BeforeEach
     void createTableIfNotExists() {
-        TestUtils.createTable();
+        createTable();
     }
 
     @Test
@@ -45,7 +49,7 @@ class ProductRepositoryImplTest {
 
         repository.save(product);
 
-        assertEquals(List.of(product), TestUtils.getAllProducts());
+        assertEquals(List.of(product), getAllProducts());
     }
 
     @Test
@@ -72,7 +76,7 @@ class ProductRepositoryImplTest {
 
     @Test
     void shouldReturnCountOfProduct() {
-        fillTable( List.of(
+        fillTable(List.of(
                 new Product("car", 100),
                 new Product("table", 10)
         ));
@@ -82,7 +86,7 @@ class ProductRepositoryImplTest {
 
     @Test
     void shouldReturnSumOfProduct() {
-        fillTable( List.of(
+        fillTable(List.of(
                 new Product("car", 100),
                 new Product("table", 10)
         ));

@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.repository.impl;
 
 import lombok.SneakyThrows;
+import ru.akirakozov.sd.refactoring.config.DataSource;
 import ru.akirakozov.sd.refactoring.model.Product;
 import ru.akirakozov.sd.refactoring.repository.ProductRepository;
 
@@ -10,6 +11,10 @@ import java.util.Optional;
 public class ProductRepositoryImpl extends BaseRepository implements ProductRepository {
 
     private final ProductMapper productMapper = new ProductMapper();
+
+    public ProductRepositoryImpl(DataSource dataSource) {
+        super(dataSource);
+    }
 
     @Override
     @SneakyThrows

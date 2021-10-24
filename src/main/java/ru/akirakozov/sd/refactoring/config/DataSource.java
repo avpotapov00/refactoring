@@ -8,22 +8,21 @@ import java.sql.Connection;
 
 public class DataSource {
 
-    private static final HikariConfig config = new HikariConfig();
-    private static final HikariDataSource ds;
+    private final HikariDataSource ds;
 
-    static {
-        config.setJdbcUrl("jdbc:sqlite:test.db");
+    public DataSource(String url) {
+        var config = new HikariConfig();
+
+        config.setJdbcUrl(url);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
         ds = new HikariDataSource(config);
     }
 
-    private DataSource() {
-    }
-
     @SneakyThrows
-    public static Connection getConnection() {
+    public Connection getConnection() {
         return ds.getConnection();
     }
 }

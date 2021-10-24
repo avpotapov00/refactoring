@@ -5,8 +5,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import ru.akirakozov.sd.refactoring.config.DataSource;
 import ru.akirakozov.sd.refactoring.model.Product;
 import ru.akirakozov.sd.refactoring.repository.impl.ProductRepositoryImpl;
+import ru.akirakozov.sd.refactoring.util.BaseTest;
 import ru.akirakozov.sd.refactoring.view.impl.ProductsHtmlMapperImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,14 +18,17 @@ import java.io.StringWriter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.akirakozov.sd.refactoring.util.TestUtils.*;
 
-class QueryServletTest {
+class QueryServletTest extends BaseTest {
 
-    private final QueryServlet queryServlet = new QueryServlet(
-            new ProductRepositoryImpl(),
-            new ProductsHtmlMapperImpl()
-    );
+    private final QueryServlet queryServlet;
+
+    public QueryServletTest() {
+        super(new DataSource("jdbc:sqlite:test.db"));
+        queryServlet = new QueryServlet(
+                new ProductRepositoryImpl(dataSource),
+                new ProductsHtmlMapperImpl());
+    }
 
     @BeforeEach
     void createTableIfNotExists() {
