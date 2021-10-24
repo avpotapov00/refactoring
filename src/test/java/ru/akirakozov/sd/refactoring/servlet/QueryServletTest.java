@@ -89,6 +89,11 @@ class QueryServletTest {
         assertEquals("Product with min price:", query("min"));
     }
 
+    @Test
+    void shouldReturnUnknownCommand() {
+        assertEquals("Unknown command: truncate", query("truncate"));
+    }
+
     @SneakyThrows
     private String query(String command) {
         var request = requestWithCommand(command);
